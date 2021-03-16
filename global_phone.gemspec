@@ -14,4 +14,11 @@ Gem::Specification.new do |s|
   s.authors = ["Sam Stephenson"]
   s.email = ["sstephenson@gmail.com"]
   s.homepage = "https://github.com/sstephenson/global_phone"
+
+  if s.respond_to?(:metadata)
+    s.metadata['allowed_push_host'] = 'https://rubygems.pkg.github.com/callrail'
+    s.metadata["homepage_uri"] = s.homepage
+  else
+    raise 'RubyGems 2.0 or newer is required to protect against public gem pushes.'
+  end
 end
