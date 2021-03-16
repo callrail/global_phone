@@ -1,0 +1,33 @@
+version: v1.0
+name: Publish Gem
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: Publish
+    run:
+      when: "branch = 'master'"
+    task:
+      secrets:
+        - name: github-token
+      prologue:
+        commands:
+          - checkout
+          - cache restore
+          - sem-version ruby 2.6.5
+          - source ~/github-token-env
+          - gem install keycutter
+          - "mkdir -p ~/.gem/"
+          - 'echo ":github: Bearer $GITHUB_PKG_TOKEN" > ~/.gem/credentials'
+          - 'chmod g=-,o=- ~/.gem/credentials' # gem complains if credentials are world-readable.
+          - bundle config set path vendor/bundle
+          - bundle config set rubygems.pkg.github.com callrail-semaphore-access:$GITHUB_PKG_TOKEN
+          - bundle config set --local gem.push_key github
+          - bundle install
+          - cache store
+      jobs:
+        - name: 'Publish Gem'
+          commands:
+            - checkout
+            - bundle exec rake publish

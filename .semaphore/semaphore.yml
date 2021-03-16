@@ -1,0 +1,14 @@
+version: v1.0
+name: Protoman
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: 'Publish gem'
+    run:
+      when: branch = 'master' and change_in(['../lib/global_phone/version.rb'])"
+    task:
+      jobs:
+				- name: Publish new version
+					pipeline_file: publish.yml
